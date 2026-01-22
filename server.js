@@ -52,7 +52,7 @@ app.get('/all', async (req, res) => {
 });
 
 //get menu from id
-app.get('/menu/:id', async (req, res) => {
+app.get('/id', async (req, res) => {
   const { id } = req.params;
   console.log(`ID: ${id} の取得リクエストが来ました`);
   try {
