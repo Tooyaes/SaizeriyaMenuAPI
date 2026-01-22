@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
     res.send('サイゼリヤAPIサーバー /randomでメニューが引ける');
 });
 
+//get random
 app.get('/random', async (req, res) => {
     try {
         console.log("2: Supabaseからデータを取得中...");
@@ -36,6 +37,38 @@ app.get('/random', async (req, res) => {
     }catch (err) {
         res.status(500).json({error: 'データが取得できませんでした'});
     }
+});
+
+//get all
+app.get('/all', async (req, res) => {
+    console.log("全件取得のリクエストが来ました");
+    try {
+        const { data, error } = await supabase.from('SaizeriyaMenu').select('*');
+        if (error) throw error;
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+//get menu from id
+app.get('/menu/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log(`ID: ${id} の取得リクエストが来ました`);
+  try {
+    const { data, error } = await supabase
+      .from('SaizeriyaMenu')
+      .select('*')
+      .eq('id', id)
+      .single(); // 1件だけ取得
+
+    if (error) throw error;
+    if (!data) return res.status(404).json({ error: "見つかりませんでした" });
+
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.listen(port, () => {
